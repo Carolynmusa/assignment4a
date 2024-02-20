@@ -67,13 +67,13 @@
       const NUM_SQUARES = NUM_ROWS * NUM_COLS;
       let currentPlayer = Math.random() < 0.5 ? 'X' : 'O';
       let gameEnded = false; 
-      let moves = Array(NUM_SQUARES).fill('-');
+      let moves = [];
 
       function squareClickHandler(event) {
         if (gameEnded) return;
         const square = event.target;
-        const index = Array.from(square.parentNode.children).indexOf(square);
-        if (moves[index] === '-') {
+        const index = parseInt(square.id.replace('sq', ''), 10);
+        if (moves[index] === undefined) {
           square.textContent = currentPlayer;
           moves[index] = currentPlayer;
           currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 
@@ -95,7 +95,7 @@
         ];
 
         const winConditions = winningCombinations.map(combo => {
-          return combo.map(index => moves[index]).join('');
+          return combo.map(index => moves[index] || '-').join('');
         });
 
         for (const condition of winConditions) {
@@ -110,7 +110,7 @@
           }
         }
 
-        if (!moves.includes('-')) {
+        if (!moves.includes(undefined)) {
           gameEnded = true;
           document.querySelector('.win-condition').textContent = 'Stalemate!';
         }
@@ -121,7 +121,7 @@
         squares.forEach(square => {
           square.textContent = '';
         });
-        moves = Array(NUM_SQUARES).fill('-');
+        moves = [];
         currentPlayer = Math.random() < 0.5 ? 'X' : 'O';
         gameEnded = false;
         updateTurnIndicator();
